@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geofence/geofence.dart';
+import 'package:geofence/geofence_flutter.dart';
 
 void main() {
   runApp(MyApp());
