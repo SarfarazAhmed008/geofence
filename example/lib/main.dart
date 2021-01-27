@@ -62,8 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
             TextField(
               controller: latitudeController,
               decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Enter pointed latitude'
+                  border: InputBorder.none,
+                  hintText: 'Enter pointed latitude'
               ),
             ),
             TextField(
