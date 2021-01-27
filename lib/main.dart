@@ -92,12 +92,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         pointedLongitude: longitudeController.text,
                         radiusMeter: radiusController.text
                     );
-                    geofenceEventStream = Geofence.getGeofenceStream().listen((GeofenceEvent event) {
-                      print(event.toString());
-                      setState(() {
-                        geofenceEvent = event.toString();
+                    if(geofenceEventStream == null){
+                      geofenceEventStream = Geofence.getGeofenceStream().listen((GeofenceEvent event) {
+                        print(event.toString());
+                        setState(() {
+                          geofenceEvent = event.toString();
+                        });
                       });
-                    });
+                    }
                   },
                 ),
                 SizedBox(width: 10.0,),
@@ -106,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: (){
                     print("stop");
                     Geofence.stopGeofenceService();
+                    geofenceEventStream.cancel();
                   },
                 ),
               ],
@@ -122,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
     latitudeController.dispose();
     longitudeController.dispose();
     radiusController.dispose();
+
     super.dispose();
   }
 

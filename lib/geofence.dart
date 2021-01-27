@@ -28,18 +28,18 @@ class Geofence {
     double longitude = _parser(pointedLongitude);
     double radiusInMeter = _parser(radiusMeter);
 
-    _geostream = _controller.stream;
+    if(_positionStream == null){
+      _geostream = _controller.stream;
+      _positionStream = Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best).listen(
+              (Position position) {
+            double distanceInMeters = Geolocator.distanceBetween(latitude, longitude, position.latitude, position.longitude);
+            print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
+            print(distanceInMeters);
+            _checkGeofence(distanceInMeters, radiusInMeter);
+          });
+      _controller.add(GeofenceEvent.init);
+    }
 
-    _positionStream = Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best).listen(
-            (Position position) {
-          double distanceInMeters = Geolocator.distanceBetween(latitude, longitude, position.latitude, position.longitude);
-          print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
-          print(distanceInMeters);
-          _checkGeofence(distanceInMeters, radiusInMeter);
-
-        });
-
-    _controller.add(GeofenceEvent.init);
   }
 
 
@@ -51,6 +51,7 @@ class Geofence {
     }
 
   }
+
 
   static stopGeofenceService(){
     if(_positionStream != null){
