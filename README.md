@@ -71,17 +71,19 @@ If you would like to receive updates when your App is in the background, you'll 
 
 At first you need to start the geofence service and for that you need to pass the following parameters:
 
-- `pointedLatitude`: the latitude of the pointed geofence area
-- `pointedLongitude`: the longitude of the pointed geofence area
+- `pointedLatitude`: the latitude of the geofence area center
+- `pointedLongitude`: the longitude of the geofence area center
 - `radiusMeter`: the radius of the geofence area in meters
+- `eventPeriodInSeconds`: geofence event stream period in seconds
 
 ``` dart
 import 'package:geofence_flutter/geofence_flutter.dart';
 
 Geofence.startGeofenceService(
-    pointedLatitude: latitudeController.text,
-    pointedLongitude: longitudeController.text,
-    radiusMeter: radiusController.text
+    pointedLatitude: "52.2165157",
+    pointedLongitude: "6.9437819",
+    radiusMeter: "50.0",
+    eventPeriodInSeconds: 10
 );
 ```
 

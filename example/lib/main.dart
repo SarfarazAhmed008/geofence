@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geofence_flutter/geofence_flutter.dart';
 
-
 void main() {
   runApp(MyApp());
 }
@@ -32,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   StreamSubscription<GeofenceEvent> geofenceEventStream;
   String geofenceEvent = '';
 
@@ -63,38 +61,34 @@ class _MyHomePageState extends State<MyHomePage> {
             TextField(
               controller: latitudeController,
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Enter pointed latitude'
-              ),
+                  border: InputBorder.none, hintText: 'Enter pointed latitude'),
             ),
             TextField(
               controller: longitudeController,
               decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Enter pointed longitude'
-              ),
+                  hintText: 'Enter pointed longitude'),
             ),
             TextField(
               controller: radiusController,
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Enter radius meter'
-              ),
+                  border: InputBorder.none, hintText: 'Enter radius meter'),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RaisedButton(
                   child: Text("Start"),
-                  onPressed: (){
+                  onPressed: () {
                     print("start");
                     Geofence.startGeofenceService(
                         pointedLatitude: latitudeController.text,
                         pointedLongitude: longitudeController.text,
-                        radiusMeter: radiusController.text
-                    );
-                    if(geofenceEventStream == null){
-                      geofenceEventStream = Geofence.getGeofenceStream().listen((GeofenceEvent event) {
+                        radiusMeter: radiusController.text,
+                        eventPeriodInSeconds: 10);
+                    if (geofenceEventStream == null) {
+                      geofenceEventStream = Geofence.getGeofenceStream()
+                          .listen((GeofenceEvent event) {
                         print(event.toString());
                         setState(() {
                           geofenceEvent = event.toString();
@@ -103,10 +97,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                   },
                 ),
-                SizedBox(width: 10.0,),
+                SizedBox(
+                  width: 10.0,
+                ),
                 RaisedButton(
                   child: Text("Stop"),
-                  onPressed: (){
+                  onPressed: () {
                     print("stop");
                     Geofence.stopGeofenceService();
                     geofenceEventStream.cancel();
@@ -129,5 +125,4 @@ class _MyHomePageState extends State<MyHomePage> {
 
     super.dispose();
   }
-
 }
