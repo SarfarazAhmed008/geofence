@@ -25,11 +25,11 @@ The TL;DR version is:
 android.useAndroidX=true
 android.enableJetifier=true
 ```
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 30:
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 33:
 
 ```
 android {
-  compileSdkVersion 30
+  compileSdkVersion 33
 
   ...
 }
@@ -79,7 +79,7 @@ At first you need to start the geofence service and for that you need to pass th
 ``` dart
 import 'package:geofence_flutter/geofence_flutter.dart';
 
-Geofence.startGeofenceService(
+await Geofence.startGeofenceService(
     pointedLatitude: "52.2165157",
     pointedLongitude: "6.9437819",
     radiusMeter: "50.0",
@@ -94,7 +94,7 @@ To get the stream geofence event updates on location changes, you need to subscr
 ``` dart
 import 'package:geofence_flutter/geofence_flutter.dart';
 
-StreamSubscription<GeofenceEvent> geofenceEventStream = Geofence.getGeofenceStream().listen(
+StreamSubscription<GeofenceEvent> geofenceEventStream = Geofence.getGeofenceStream()?.listen(
   (GeofenceEvent event) {
     print(event.toString());
 });
@@ -110,7 +110,7 @@ Geofence.stopGeofenceService();
 Also, stop GeofenceEvent stream subscription listener which is `geofenceEventStream` in our case
 
 ``` dart
-geofenceEventStream.cancel();
+geofenceEventStream?.cancel();
 ```
 
 ## Issues
