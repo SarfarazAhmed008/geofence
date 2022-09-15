@@ -17,12 +17,13 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter Geofence'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -31,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  StreamSubscription<GeofenceEvent> geofenceEventStream;
+  StreamSubscription<GeofenceEvent>? geofenceEventStream;
   String geofenceEvent = '';
 
   TextEditingController latitudeController = new TextEditingController();
@@ -77,18 +78,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                RaisedButton(
+                TextButton(
                   child: Text("Start"),
-                  onPressed: () {
+                  onPressed: () async {
                     print("start");
-                    Geofence.startGeofenceService(
+                    await Geofence.startGeofenceService(
                         pointedLatitude: latitudeController.text,
                         pointedLongitude: longitudeController.text,
                         radiusMeter: radiusController.text,
                         eventPeriodInSeconds: 10);
                     if (geofenceEventStream == null) {
                       geofenceEventStream = Geofence.getGeofenceStream()
-                          .listen((GeofenceEvent event) {
+                          ?.listen((GeofenceEvent event) {
                         print(event.toString());
                         setState(() {
                           geofenceEvent = event.toString();
@@ -100,12 +101,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 10.0,
                 ),
-                RaisedButton(
+                TextButton(
                   child: Text("Stop"),
                   onPressed: () {
                     print("stop");
                     Geofence.stopGeofenceService();
-                    geofenceEventStream.cancel();
+                    geofenceEventStream?.cancel();
                   },
                 ),
               ],

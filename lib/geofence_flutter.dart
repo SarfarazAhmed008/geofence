@@ -1,3 +1,5 @@
+library geofence_flutter;
+
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
@@ -10,10 +12,10 @@ enum GeofenceEvent { init, enter, exit }
 /// Geofence plugin class
 class Geofence {
   /// [ _positionStream ] is for getting stream position on location updates
-  static StreamSubscription<Position> _positionStream;
+  static StreamSubscription<Position>? _positionStream;
 
   /// [_geostream] is for geofence event stream
-  static Stream<GeofenceEvent> _geostream;
+  static Stream<GeofenceEvent>? _geostream;
 
   /// [_controller] is Stream controller for geofence event stream
   static StreamController<GeofenceEvent> _controller =
@@ -26,7 +28,7 @@ class Geofence {
   }
 
   /// For getting geofence event stream property which is basically returns [_geostream]
-  static Stream<GeofenceEvent> getGeofenceStream() {
+  static Stream<GeofenceEvent>? getGeofenceStream() {
     return _geostream;
   }
 
@@ -42,23 +44,32 @@ class Geofence {
   /// At first it will check location permission and if enabled then it will start listening the current location changes
   /// then calculate the distance of changes point to the allocated geofencing area points
   static startGeofenceService(
-      {String pointedLatitude,
-      String pointedLongitude,
-      String radiusMeter,
-      int eventPeriodInSeconds}) {
+      {required String pointedLatitude,
+      required String pointedLongitude,
+      required String radiusMeter,
+      required int eventPeriodInSeconds}) async {
     double latitude = _parser(pointedLatitude);
     double longitude = _parser(pointedLongitude);
     double radiusInMeter = _parser(radiusMeter);
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) return;
+    }
+    if (permission == LocationPermission.deniedForever) return;
     if (_positionStream == null) {
       _geostream = _controller.stream;
-      _positionStream =
-          Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best)
-              .listen((Position position) {
-        double distanceInMeters = Geolocator.distanceBetween(
-            latitude, longitude, position.latitude, position.longitude);
-        _checkGeofence(distanceInMeters, radiusInMeter);
-        _positionStream
-            .pause(Future.delayed(Duration(seconds: eventPeriodInSeconds)));
+      _positionStream = Geolocator.getPositionStream(
+              locationSettings:
+                  LocationSettings(accuracy: LocationAccuracy.best))
+          .listen((Position? position) {
+        if (position != null) {
+          double distanceInMeters = Geolocator.distanceBetween(
+              latitude, longitude, position.latitude, position.longitude);
+          _checkGeofence(distanceInMeters, radiusInMeter);
+          _positionStream!
+              .pause(Future.delayed(Duration(seconds: eventPeriodInSeconds)));
+        }
       });
       _controller.add(GeofenceEvent.init);
     }
@@ -84,7 +95,7 @@ class Geofence {
   /// it will cancel the subscription of the stream
   static stopGeofenceService() {
     if (_positionStream != null) {
-      _positionStream.cancel();
+      _positionStream!.cancel();
     }
   }
 }
