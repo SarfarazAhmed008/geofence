@@ -1,6 +1,7 @@
 name: geofence_flutter
 description: Flutter geofencing plugin for flutter application (android and ios).
-homepage: https://github.com/SarfarazAhmed008/geofence
+repository: https://github.com/SarfarazAhmed008/geofence
+issue_tracker: https://github.com/SarfarazAhmed008/geofence/issues?q=is%3Aissue+is%3Aopen
 
 version: 2.0.0
 
